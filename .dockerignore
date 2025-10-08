@@ -1,0 +1,27 @@
+# Node
+node_modules/
+npm-debug.log*
+frontend/dist/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+.Python
+*.egg-info/
+
+# Git
+.git/
+.gitignore
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+.claude/
+
+# Development
+start.sh

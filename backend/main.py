@@ -6,6 +6,7 @@ Serves decision tree data
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 import json
 import os
@@ -32,6 +33,11 @@ app.add_middleware(
 
 # Load decision tree data
 DATA_FILE = Path(__file__).parent.parent / "decision_tree.json"
+
+# Mount static files if they exist (for Docker deployment)
+static_dir = Path(__file__).parent / "static"
+if static_dir.exists():
+    app.mount("/", StaticFiles(directory=str(static_dir), html=True), name="static")
 
 def load_tree_data():
     """Load and return the decision tree data"""
