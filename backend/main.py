@@ -32,7 +32,10 @@ app.add_middleware(
 )
 
 # Load decision tree data
-DATA_FILE = Path(__file__).parent.parent / "decision_tree.json"
+# In Docker: /app/decision_tree.json, In development: ../decision_tree.json
+DATA_FILE = Path(__file__).parent / "decision_tree.json"
+if not DATA_FILE.exists():
+    DATA_FILE = Path(__file__).parent.parent / "decision_tree.json"
 
 def load_tree_data():
     """Load and return the decision tree data"""
