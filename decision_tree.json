@@ -1,0 +1,363 @@
+{
+  "title": "Expo Content Recommendation System",
+  "subtitle": "Interactive Decision Framework for Building a Custom Recommendation Pipeline ",
+  "phases": [
+    {
+      "id": 1,
+      "name": "Initialization",
+      "description": "How should we set up initial recommendations?",
+      "startNode": "start"
+    },
+    {
+      "id": 2,
+      "name": "Real-Time Engine",
+      "description": "Configure recommendation algorithm features",
+      "type": "menu",
+      "options": [
+        {
+          "id": "booth_metadata",
+          "question": "Use booth metadata for content-based filtering?",
+          "description": "Match booths using keywords, categories, and descriptions",
+          "default": false
+        },
+        {
+          "id": "collaborative",
+          "question": "Use collaborative filtering?",
+          "description": "Recommend booths that similar visitors also visited",
+          "default": false
+        },
+        {
+          "id": "walking_distance",
+          "question": "Should walking distance be factored?",
+          "description": "Prioritize nearby booths to reduce walking time",
+          "default": false
+        },
+        {
+          "id": "capacity",
+          "question": "Apply crowd management constraints?",
+          "description": "Avoid recommending overcrowded booths",
+          "default": false
+        },
+        {
+          "id": "time_events",
+          "question": "Factor in time-sensitive events?",
+          "description": "Consider scheduled demos, seminars, and workshops",
+          "default": false
+        },
+        {
+          "id": "paid_ads",
+          "question": "Will paid advertisement be offered to boost rankings?",
+          "description": "Allow exhibitors to pay for higher placement in recommendations",
+          "default": false
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Delivery & Updates",
+      "description": "How will attendees receive recommendations?",
+      "startNode": "mobile_app"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "start",
+      "devId": "1",
+      "phase": 1,
+      "type": "decision",
+      "question": "Initial recommendations",
+      "description": "Should recommendations be pre-generated for each user before the start of the event?",
+      "options": {
+        "YES": "profile_based",
+        "NO": "simple_init"
+      }
+    },
+    {
+      "id": "profile_based",
+      "devId": "2A",
+      "phase": 1,
+      "type": "decision",
+      "question": "Profile-based initialization",
+      "description": "Is there enough information about users to generate initial recommendations? Sources of information might be interest sections or keywords from registration data, or usage analytics from event web/mobile pages.",
+      "options": {
+        "YES": "go_to_phase_2_a",
+        "NO": "generic_choice"
+      }
+    },
+    {
+      "id": "go_to_phase_2_a",
+      "devId": "3A",
+      "phase": 1,
+      "type": "info",
+      "title": "Profile-based initialization",
+      "description": "Generate initial recommendations based on pre-event user profile data.",
+      "next": null
+    },
+    {
+      "id": "generic_choice",
+      "devId": "3A-NO",
+      "phase": 1,
+      "type": "decision",
+      "question": "Generic initialization",
+      "description": "Should a generic set of initial recommendations be generated for all users?",
+      "options": {
+        "YES": "generic_init",
+        "NO": "no_init"
+      }
+    },
+    {
+      "id": "generic_init",
+      "devId": "4A",
+      "phase": 1,
+      "type": "info",
+      "title": "Generate Generic Recommendations",
+      "description": "Manually generate generic set of initial recommendations for all users.",
+      "next": null
+    },
+    {
+      "id": "no_init",
+      "devId": "4B",
+      "phase": 1,
+      "type": "info",
+      "title": "No Initial Recommendations",
+      "description": "Do not generate initial recommendations.",
+      "next": null
+    },
+    {
+      "id": "simple_init",
+      "devId": "2B",
+      "phase": 1,
+      "type": "info",
+      "title": "No initial recommendations",
+      "description": "",
+      "next": null
+    },
+    {
+      "id": "input_data",
+      "devId": "P2-1",
+      "phase": 2,
+      "type": "info",
+      "title": "Real-Time Tracking",
+      "description": "Track booth visits, dwell time, and optional app interactions",
+      "next": "booth_data"
+    },
+    {
+      "id": "booth_data",
+      "devId": "P2-2",
+      "phase": 2,
+      "type": "decision",
+      "question": "Booth metadata available?",
+      "description": "Do we have keywords, categories, or descriptions for each booth?",
+      "options": {
+        "YES": "content_based",
+        "NO": "collab_filter"
+      }
+    },
+    {
+      "id": "content_based",
+      "devId": "P2-3A",
+      "phase": 2,
+      "type": "info",
+      "title": "Content-Based Filtering",
+      "description": "Match booths using keywords, categories, and website content",
+      "next": "constraints"
+    },
+    {
+      "id": "collab_filter",
+      "devId": "P2-3B",
+      "phase": 2,
+      "type": "info",
+      "title": "Collaborative Filtering",
+      "description": "Recommend booths that similar visitors also visited",
+      "next": "constraints"
+    },
+    {
+      "id": "constraints",
+      "devId": "P2-4",
+      "phase": 2,
+      "type": "decision",
+      "question": "Apply constraints?",
+      "description": "Should we factor in distance, capacity, or time-based events?",
+      "options": {
+        "YES": "distance",
+        "NO": null
+      }
+    },
+    {
+      "id": "distance",
+      "devId": "P2-5",
+      "phase": 2,
+      "type": "info",
+      "title": "Proximity Weighting",
+      "description": "Prioritize nearby booths to reduce walking time",
+      "next": "capacity"
+    },
+    {
+      "id": "capacity",
+      "devId": "P2-6",
+      "phase": 2,
+      "type": "info",
+      "title": "Crowd Management",
+      "description": "Avoid recommending overcrowded booths",
+      "next": "time_events"
+    },
+    {
+      "id": "time_events",
+      "devId": "P2-7",
+      "phase": 2,
+      "type": "info",
+      "title": "Time-Sensitive Events",
+      "description": "Factor in scheduled demos, seminars, and workshops",
+      "next": null
+    },
+    {
+      "id": "mobile_app",
+      "phase": 3,
+      "type": "decision",
+      "question": "Mobile app availability",
+      "description": "Is there an official event mobile app?",
+      "options": {
+        "YES": "dev_access",
+        "NO": "alternative_channels"
+      }
+    },
+    {
+      "id": "dev_access",
+      "phase": 3,
+      "type": "decision",
+      "question": "Developer access",
+      "description": "Do you have developer access to customize the mobile app?",
+      "options": {
+        "YES": "agenda_feature",
+        "NO": "external_integration"
+      }
+    },
+    {
+      "id": "agenda_feature",
+      "phase": 3,
+      "type": "decision",
+      "question": "Existing agenda feature",
+      "description": "Does the app already have an agenda or schedule feature?",
+      "options": {
+        "YES": "push_notifications",
+        "NO": "build_display"
+      }
+    },
+    {
+      "id": "build_display",
+      "phase": 3,
+      "type": "info",
+      "title": "Build recommendation display",
+      "description": "Need to build recommendation display UI from scratch.",
+      "next": "push_notifications"
+    },
+    {
+      "id": "external_integration",
+      "phase": 3,
+      "type": "info",
+      "title": "External integration only",
+      "description": "Limited to external integration via webhooks and notifications.",
+      "next": "push_notifications"
+    },
+    {
+      "id": "alternative_channels",
+      "phase": 3,
+      "type": "info",
+      "title": "Alternative delivery channels",
+      "description": "Deliver recommendations via email, SMS, web portal, or physical kiosks.",
+      "next": "update_frequency"
+    },
+    {
+      "id": "push_notifications",
+      "phase": 3,
+      "type": "decision",
+      "question": "Push notifications",
+      "description": "Can we send push notifications to attendees?",
+      "options": {
+        "YES": "update_frequency",
+        "NO": "passive_updates"
+      }
+    },
+    {
+      "id": "passive_updates",
+      "phase": 3,
+      "type": "info",
+      "title": "Passive updates only",
+      "description": "Updates will be passive (pull-based, in-app badge only).",
+      "next": "update_frequency"
+    },
+    {
+      "id": "update_frequency",
+      "phase": 3,
+      "type": "decision",
+      "question": "Offer real-time updates?",
+      "description": "Recommendations update automatically every 5-10 minutes",
+      "options": {
+        "YES": "realtime_updates",
+        "NO": "on_demand_choice"
+      }
+    },
+    {
+      "id": "realtime_updates",
+      "phase": 3,
+      "type": "info",
+      "title": "Real-time updates enabled",
+      "description": "Recommendations update automatically every 5-10 minutes.",
+      "next": "privacy_opt_out"
+    },
+    {
+      "id": "on_demand_choice",
+      "phase": 3,
+      "type": "decision",
+      "question": "Offer on-demand updates?",
+      "description": "Users pull to refresh recommendations when desired",
+      "options": {
+        "YES": "on_demand_updates",
+        "NO": "scheduled_updates"
+      }
+    },
+    {
+      "id": "on_demand_updates",
+      "phase": 3,
+      "type": "info",
+      "title": "On-demand updates enabled",
+      "description": "Users pull to refresh recommendations when desired.",
+      "next": "privacy_opt_out"
+    },
+    {
+      "id": "scheduled_updates",
+      "phase": 3,
+      "type": "info",
+      "title": "Scheduled updates",
+      "description": "Recommendations refresh at fixed intervals (hourly, per session).",
+      "next": "privacy_opt_out"
+    },
+    {
+      "id": "privacy_opt_out",
+      "phase": 3,
+      "type": "decision",
+      "question": "Privacy & opt-out",
+      "description": "Allow attendees to opt out of tracking and recommendations?",
+      "options": {
+        "YES": "privacy_enabled",
+        "NO": "privacy_disabled"
+      }
+    },
+    {
+      "id": "privacy_enabled",
+      "phase": 3,
+      "type": "info",
+      "title": "✓ Done - Privacy controls enabled",
+      "description": "Include consent management and opt-out toggle for attendees.",
+      "next": null
+    },
+    {
+      "id": "privacy_disabled",
+      "phase": 3,
+      "type": "info",
+      "title": "✓ Done - Mandatory participation",
+      "description": "All attendees participate in recommendation system.",
+      "next": null
+    }
+  ]
+}
