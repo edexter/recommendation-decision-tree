@@ -13,7 +13,9 @@ function App() {
 
   useEffect(() => {
     // Fetch decision tree data from backend
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    // In production (Docker), use relative URL since frontend and backend are on same server
+    // In development, use localhost:8000
+    const API_URL = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:8000' : '');
 
     fetch(`${API_URL}/api/tree`)
       .then(res => {

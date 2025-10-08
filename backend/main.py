@@ -34,18 +34,14 @@ app.add_middleware(
 # Load decision tree data
 DATA_FILE = Path(__file__).parent.parent / "decision_tree.json"
 
-# Mount static files if they exist (for Docker deployment)
-static_dir = Path(__file__).parent / "static"
-if static_dir.exists():
-    app.mount("/", StaticFiles(directory=str(static_dir), html=True), name="static")
-
 def load_tree_data():
     """Load and return the decision tree data"""
     with open(DATA_FILE, "r") as f:
         return json.load(f)
 
-@app.get("/")
-async def root():
+# Define API routes BEFORE mounting static files
+@app.get("/api/health")
+async def health():
     """Health check endpoint"""
     return {"status": "ok", "message": "Decision Tree API"}
 
@@ -53,6 +49,12 @@ async def root():
 async def get_tree():
     """Return the complete decision tree structure"""
     return load_tree_data()
+
+# Mount static files last (for Docker deployment)
+# This serves the frontend at / but won't interfere with /api/* routes
+static_dir = Path(__file__).parent / "static"
+if static_dir.exists():
+    app.mount("/", StaticFiles(directory=str(static_dir), html=True), name="static")
 
 if __name__ == "__main__":
     import uvicorn
